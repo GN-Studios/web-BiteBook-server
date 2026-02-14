@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import { connectDB } from "./db/connection";
+import userRoutes from "./routes/userRoutes";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,9 @@ app.get("/", (req: Request, res: Response) => {
 app.get("/api/health", (req: Request, res: Response) => {
   res.json({ status: "OK" });
 });
+
+// User routes
+app.use("/api/users", userRoutes);
 
 // Connect to MongoDB and start server
 const start = async () => {

@@ -1,0 +1,29 @@
+### get all users
+GET http://localhost:3000/api/users
+
+### get post by id
+GET http://localhost:3000/api/users/698fc887633cc499a80d94d2
+
+### create post
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Shaked",
+  "email": "shaked@example.com",
+  "password": "password123"
+}
+
+
+### update user
+PUT http://localhost:3000/api/users/698fc782633cc499a80d94c3
+Content-Type: application/json
+
+{
+  "name": "Shaked Updated",
+  "email": "shaked.updated@example.com",
+  "password": "newpassword123"
+}
+
+### delete user
+DELETE http://localhost:3000/api/users/698fc782633cc499a80d94c3
