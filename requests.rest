@@ -98,3 +98,37 @@ Content-Type: application/json
 
 ### delete recipe
 DELETE http://localhost:3000/api/recipes/6990f7f6b3ed23b4f5d58571
+
+
+
+
+
+### get comment by id
+GET http://localhost:3000/api/comments/6990fad3d9952528e0d3e4d9
+
+### get comments by recipe id
+GET http://localhost:3000/api/comments/recipe/6990f7f6b3ed23b4f5d58571
+
+### create comment
+POST http://localhost:3000/api/comments
+Content-Type: application/json
+
+{
+  "text": "This is a great recipe!",
+  "userId": "698fc782633cc499a80d94c3",
+  "recipeId": "6990f7f6b3ed23b4f5d58571"
+}
+
+
+### update comment
+PUT http://localhost:3000/api/comments/6990fad3d9952528e0d3e4d9
+Content-Type: application/json
+
+{
+  "text": "This is an updated great recipe!",
+  "userId": "698fc782633cc499a80d94c3",
+  "recipeId": "6990f7f6b3ed23b4f5d58571"
+}
+
+### delete comment
+DELETE http://localhost:3000/api/comments/6990fb06d9952528e0d3e4e2

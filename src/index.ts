@@ -4,6 +4,7 @@ import cors from "cors";
 import { connectDB } from "./db/connection";
 import userRoutes from "./routes/userRoutes";
 import recipeRoutes from "./routes/recipeRoutes";
+import commentRoutes from "./routes/commentRoutes";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,9 @@ app.use("/api/users", userRoutes);
 
 // Recipe routes
 app.use("/api/recipes", recipeRoutes);
+
+// Comment routes
+app.use("/api/comments", commentRoutes);
 
 // Connect to MongoDB and start server
 const start = async () => {
