@@ -3,6 +3,7 @@ import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import { connectDB } from "./db/connection";
 import userRoutes from "./routes/userRoutes";
+import recipeRoutes from "./routes/recipeRoutes";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,9 @@ app.get("/api/health", (req: Request, res: Response) => {
 
 // User routes
 app.use("/api/users", userRoutes);
+
+// Recipe routes
+app.use("/api/recipes", recipeRoutes);
 
 // Connect to MongoDB and start server
 const start = async () => {
