@@ -132,3 +132,34 @@ Content-Type: application/json
 
 ### delete comment
 DELETE http://localhost:3000/api/comments/6990fb06d9952528e0d3e4e2
+
+
+
+
+
+### create like
+POST http://localhost:3000/api/likes
+Content-Type: application/json
+
+{
+  "userId": "698fc782633cc499a80d94c4",
+  "recipeId": "6990f7f6b3ed23b4f5d58572"
+}
+
+### get likes count on recipe
+GET http://localhost:3000/api/likes/recipe/6990f7f6b3ed23b4f5d58572
+
+### get likes by user id
+GET http://localhost:3000/api/likes/user/698fc782633cc499a80d94c4
+
+### check if user liked recipe
+GET http://localhost:3000/api/likes/check/698fc782633cc499a80d94c3/6990f7f6b3ed23b4f5d58572
+
+### delete like
+DELETE http://localhost:3000/api/likes
+Content-Type: application/json
+
+{
+  "userId": "698fc782633cc499a80d94c4",
+  "recipeId": "6990f7f6b3ed23b4f5d58572"
+}

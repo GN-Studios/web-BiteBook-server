@@ -5,6 +5,7 @@ import { connectDB } from "./db/connection";
 import userRoutes from "./routes/userRoutes";
 import recipeRoutes from "./routes/recipeRoutes";
 import commentRoutes from "./routes/commentRoutes";
+import likeRoutes from "./routes/likeRoutes";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,9 @@ app.use("/api/recipes", recipeRoutes);
 
 // Comment routes
 app.use("/api/comments", commentRoutes);
+
+// Like routes
+app.use("/api/likes", likeRoutes);
 
 // Connect to MongoDB and start server
 const start = async () => {
