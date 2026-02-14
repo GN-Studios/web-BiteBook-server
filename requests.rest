@@ -31,6 +31,9 @@ DELETE http://localhost:3000/api/users/698fc782633cc499a80d94c3
 
 
 
+### get all recipes with details
+GET http://localhost:3000/api/recipes/with-details
+
 ### get all recipes
 GET http://localhost:3000/api/recipes
 
