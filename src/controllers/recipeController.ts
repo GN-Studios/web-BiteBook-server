@@ -197,6 +197,13 @@ export const getAllRecipesWithDetails = async (
   res: Response,
 ): Promise<void> => {
   try {
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, parseInt(req.query.limit as string) || 10);
+    const skip = (page - 1) * limit;
+
+    // Get total count
+    const total = await Recipe.countDocuments();
+
     const recipes = await Recipe.aggregate([
       {
         $lookup: {
@@ -248,7 +255,11 @@ export const getAllRecipesWithDetails = async (
           author: {
             $cond: {
               if: { $ne: ["$author", null] },
-              then: { name: "$author.name", email: "$author.email", image: "$author.image" },
+              then: {
+                name: "$author.name",
+                email: "$author.email",
+                image: "$author.image",
+              },
               else: null,
             },
           },
@@ -259,9 +270,23 @@ export const getAllRecipesWithDetails = async (
         },
       },
       { $sort: { createdAt: -1 } },
+      { $skip: skip },
+      { $limit: limit },
     ]);
 
-    res.status(200).json(recipes);
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({
+      data: recipes,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (error: any) {
     res.status(500).json({ error: error.message || "Internal server error" });
   }
