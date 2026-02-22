@@ -6,15 +6,9 @@ export const connectDB = async (): Promise<void> => {
       process.env.MONGODB_URI || "mongodb://localhost:27017/bitebook";
 
     await mongoose.connect(
-      mongoUri,
       process.env.MONGODB_USERNAME && process.env.MONGODB_PASSWORD
-        ? {
-            auth: {
-              username: process.env.MONGODB_USERNAME,
-              password: process.env.MONGODB_PASSWORD,
-            },
-          }
-        : undefined,
+        ? `mongodb://${process.env.MONGODB_USERNAME}:${encodeURIComponent(process.env.MONGODB_PASSWORD)}@${process.env.MONGODB_HOST}/${process.env.MONGODB_NAME}?authSource=admin`
+        : mongoUri,
     );
 
     console.log("MongoDB connected successfully");
