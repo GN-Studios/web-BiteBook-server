@@ -4,10 +4,9 @@ import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { connectDB } from "./db/connection";
 import { swaggerSpec } from "./config/swagger";
-import userRoutes from "./routes/userRoutes";
-import recipeRoutes from "./routes/recipeRoutes";
-import commentRoutes from "./routes/commentRoutes";
-import likeRoutes from "./routes/likeRoutes";
+import { userRouter, commentRouter, recipeRouter, likeRouter, authRouter } from "./routes";
+import cookieParser from "cookie-parser";
+import { corsMiddleware } from "./config";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -16,6 +15,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cookieParser());
+app.use(corsMiddleware);
 
 // Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -30,18 +32,12 @@ app.get("/api/health", (req: Request, res: Response) => {
 });
 
 // User routes
-app.use("/api/users", userRoutes);
+app.use("/api/users", userRouter);
+app.use("/api/recipes", recipeRouter);
+app.use("/api/comments", commentRouter);
+app.use("/api/likes", likeRouter);
+app.use("/auth", authRouter);
 
-// Recipe routes
-app.use("/api/recipes", recipeRoutes);
-
-// Comment routes
-app.use("/api/comments", commentRoutes);
-
-// Like routes
-app.use("/api/likes", likeRoutes);
-
-// Connect to MongoDB and start server
 const start = async () => {
   try {
     await connectDB();

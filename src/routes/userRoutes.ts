@@ -1,13 +1,7 @@
 import { Router } from "express";
-import {
-  createUser,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser,
-} from "../controllers/userController";
+import { createUser, getAllUsers, getUserById, updateUser, deleteUser } from "../controllers/userController";
 
-const router = Router();
+export const userRouter = Router();
 
 /**
  * @swagger
@@ -33,7 +27,7 @@ const router = Router();
  *       400:
  *         description: Bad request
  */
-router.post("/", createUser);
+userRouter.post("/", createUser);
 
 /**
  * @swagger
@@ -51,7 +45,7 @@ router.post("/", createUser);
  *               items:
  *                 $ref: '#/components/schemas/User'
  */
-router.get("/", getAllUsers);
+userRouter.get("/", getAllUsers);
 
 /**
  * @swagger
@@ -74,7 +68,7 @@ router.get("/", getAllUsers);
  *       404:
  *         description: User not found
  */
-router.get("/:id", getUserById);
+userRouter.get("/:id", getUserById);
 
 /**
  * @swagger
@@ -104,7 +98,7 @@ router.get("/:id", getUserById);
  *       404:
  *         description: User not found
  */
-router.put("/:id", updateUser);
+userRouter.put("/:id", updateUser);
 
 /**
  * @swagger
@@ -123,6 +117,4 @@ router.put("/:id", updateUser);
  *       404:
  *         description: User not found
  */
-router.delete("/:id", deleteUser);
-
-export default router;
+userRouter.delete("/:id", deleteUser);
