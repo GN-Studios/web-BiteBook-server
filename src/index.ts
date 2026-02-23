@@ -3,10 +3,10 @@ import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { connectDB } from "./db/connection";
-import { swaggerSpec } from "./config/swagger";
 import { userRouter, commentRouter, recipeRouter, likeRouter, authRouter } from "./routes";
 import cookieParser from "cookie-parser";
-import { corsMiddleware } from "./config";
+import { corsMiddleware, swaggerSpec } from "./config";
+import { authenticate } from "./middleware/authenticate";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -32,11 +32,11 @@ app.get("/api/health", (req: Request, res: Response) => {
 });
 
 // User routes
-app.use("/api/users", userRouter);
-app.use("/api/recipes", recipeRouter);
-app.use("/api/comments", commentRouter);
-app.use("/api/likes", likeRouter);
-app.use("/auth", authRouter);
+app.use("/api/users", authenticate, userRouter);
+app.use("/api/recipes", authenticate, recipeRouter);
+app.use("/api/comments", authenticate, commentRouter);
+app.use("/api/likes", authenticate, likeRouter);
+app.use("/api/auth", authRouter);
 
 const start = async () => {
   try {

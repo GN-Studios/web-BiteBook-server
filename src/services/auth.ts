@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { User } from "../models/User";
-
-const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+import { env } from "../config";
+import { TokensService } from "./tokens";
 
 export class AuthService {
   static async register(name: string, email: string, password: string, image?: string) {
@@ -20,7 +20,7 @@ export class AuthService {
 
     return {
       user,
-      token: jwt.sign({ id: user._id }, JWT_SECRET),
+      token: TokensService.signToken(user._id.toString()),
     };
   }
 
@@ -33,8 +33,7 @@ export class AuthService {
 
     return {
       user,
-      token: jwt.sign({ id: user._id }, JWT_SECRET),
+      token: TokensService.signToken(user._id.toString()),
     };
   }
 }
-``;

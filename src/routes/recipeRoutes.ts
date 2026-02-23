@@ -99,7 +99,7 @@ recipeRouter.get("/", getAllRecipes);
  *       200:
  *         description: List of user's recipes
  */
-recipeRouter.get("/user/:userId", getRecipesByUserId);
+recipeRouter.get("/userRecipes/:userId", getRecipesByUserId);
 
 /**
  * @swagger
