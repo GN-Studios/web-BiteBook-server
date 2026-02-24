@@ -1,13 +1,19 @@
 import request from "supertest";
 import express from "express";
-import likeRoutes from "../likeRoutes";
+import { likeRouter } from "../likeRoutes";
 import { Like } from "../../models/Like";
 
 jest.mock("../../models/Like");
+jest.mock("mongoose", () => ({
+  ...jest.requireActual("mongoose"),
+  Types: {
+    ObjectId: jest.fn((id) => id),
+  },
+}));
 
 const app = express();
 app.use(express.json());
-app.use("/api/likes", likeRoutes);
+app.use("/api/likes", likeRouter);
 
 describe("Like Routes", () => {
   beforeEach(() => {
@@ -155,14 +161,16 @@ describe("Like Routes", () => {
           _id: "1",
           userId: "123",
           recipeId: "456",
+          recipeData: {
+            _id: "456",
+            title: "Test Recipe",
+          },
+          commentsCount: 5,
+          likesCount: 10,
         },
       ];
 
-      (Like.find as jest.Mock).mockReturnValue({
-        populate: jest.fn().mockReturnValue({
-          sort: jest.fn().mockResolvedValue(likes),
-        }),
-      });
+      (Like.aggregate as jest.Mock).mockResolvedValue(likes);
 
       const response = await request(app).get("/api/likes/user/123");
 

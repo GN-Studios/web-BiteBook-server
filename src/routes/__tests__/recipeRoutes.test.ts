@@ -1,13 +1,13 @@
 import request from "supertest";
 import express from "express";
-import recipeRoutes from "../recipeRoutes";
+import { recipeRouter } from "../recipeRoutes";
 import { Recipe } from "../../models/Recipe";
 
 jest.mock("../../models/Recipe");
 
 const app = express();
 app.use(express.json());
-app.use("/api/recipes", recipeRoutes);
+app.use("/api/recipes", recipeRouter);
 
 describe("Recipe Routes", () => {
   beforeEach(() => {
