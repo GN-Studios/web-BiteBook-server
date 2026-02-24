@@ -166,3 +166,11 @@ Content-Type: application/json
   "userId": "698fc782633cc499a80d94c4",
   "recipeId": "6990f7f6b3ed23b4f5d58572"
 }
+
+### access AI recipe
+POST http://localhost:3000/api/chatgpt/suggest-recipes
+Content-Type: application/json
+
+{
+  "input": "I want something with chicken and vegetables"
+}

@@ -11,6 +11,7 @@ import userRoutes from "./routes/userRoutes";
 import recipeRoutes from "./routes/recipeRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import likeRoutes from "./routes/likeRoutes";
+import chatgptRoutes from "./routes/chatgptRoutes";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -54,6 +55,9 @@ app.use("/api/comments", commentRoutes);
 
 // Like routes
 app.use("/api/likes", likeRoutes);
+
+// ChatGPT routes
+app.use("/api/chatgpt", chatgptRoutes);
 
 // Connect to MongoDB and start server
 const start = async () => {
