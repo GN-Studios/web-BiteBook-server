@@ -111,9 +111,76 @@ export const getLikesByUserId = async (
   try {
     const { userId } = req.params;
 
-    const likes = await Like.find({ userId })
-      .populate("recipeId")
-      .sort({ createdAt: -1 });
+    const likes = await Like.aggregate([
+      { $match: { userId: new (require("mongoose").Types.ObjectId)(userId) } },
+      {
+        $lookup: {
+          from: "recipes",
+          localField: "recipeId",
+          foreignField: "_id",
+          as: "recipeData",
+        },
+      },
+      { $unwind: { path: "$recipeData", preserveNullAndEmptyArrays: true } },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "recipeData._id",
+          foreignField: "recipeId",
+          as: "comments",
+        },
+      },
+      {
+        $lookup: {
+          from: "likes",
+          localField: "recipeData._id",
+          foreignField: "recipeId",
+          as: "recipeLikes",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "recipeData.userId",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          userId: 1,
+          recipeId: {
+            _id: "$recipeData._id",
+            title: "$recipeData.title",
+            description: "$recipeData.description",
+            image: "$recipeData.image",
+            prepTime: "$recipeData.prepTime",
+            cookTime: "$recipeData.cookTime",
+            servings: "$recipeData.servings",
+            ingredients: "$recipeData.ingredients",
+            instructions: "$recipeData.instructions",
+            author: {
+              $cond: {
+                if: { $gt: [{ $size: "$author" }, 0] },
+                then: {
+                  name: { $arrayElemAt: ["$author.name", 0] },
+                  email: { $arrayElemAt: ["$author.email", 0] },
+                  image: { $arrayElemAt: ["$author.image", 0] },
+                },
+                else: null,
+              },
+            },
+            commentsCount: { $size: "$comments" },
+            likesCount: { $size: "$recipeLikes" },
+            createdAt: "$recipeData.createdAt",
+            updatedAt: "$recipeData.updatedAt",
+          },
+          createdAt: 1,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
 
     res.status(200).json(likes);
   } catch (error: any) {
