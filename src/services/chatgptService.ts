@@ -7,9 +7,9 @@ interface Recipe {
     name: string;
     amount: string;
   }>;
-  instructions: string[];
-  prepTime: number;
-  cookTime: number;
+  steps: string[];
+  prepMinutes: number;
+  cookMinutes: number;
   servings: number;
 }
 
@@ -60,9 +60,9 @@ Return the recipes as a JSON array with the following structure for each recipe:
     { "name": "ingredient name", "amount": "quantity with unit" },
     { "name": "ingredient name", "amount": "quantity with unit" }
   ],
-  "instructions": ["step 1", "step 2", ...],
-  "prepTime": number (minutes),
-  "cookTime": number (minutes),
+  "steps": ["step 1", "step 2", ...],
+  "prepMinutes": number (minutes),
+  "cookMinutes": number (minutes),
   "servings": number
 }
 
@@ -76,7 +76,7 @@ Return ONLY the JSON array, no additional text.`;
       return {
         ...recipe,
         id: crypto.randomUUID(),
-        creator: "AI-chef",
+        creator: { name: "AI Chef" },
         likes: 0,
       };
     }); // Return max 3 recipes
