@@ -20,6 +20,7 @@ import { authenticate } from "./middleware/authenticate";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
+const BODY_LIMIT = process.env.BODY_LIMIT || "10mb";
 
 // Read SSL certificate and key files
 const options =
@@ -37,8 +38,8 @@ app.use(cors({
   origin: "*",
   credentials: true,
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: BODY_LIMIT }));
+app.use(express.urlencoded({ extended: true, limit: BODY_LIMIT }));
 
 app.use(cookieParser());
 
