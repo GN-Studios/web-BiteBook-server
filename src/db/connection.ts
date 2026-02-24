@@ -6,15 +6,9 @@ export const connectDB = async (): Promise<void> => {
     const mongoUri = env.MONGO_URI;
 
     await mongoose.connect(
-      mongoUri,
-      env.MONGODB_USERNAME && env.MONGODB_PASSWORD
-        ? {
-            auth: {
-              username: env.MONGODB_USERNAME,
-              password: env.MONGODB_PASSWORD,
-            },
-          }
-        : undefined,
+      process.env.MONGODB_USERNAME && process.env.MONGODB_PASSWORD
+        ? `mongodb://${process.env.MONGODB_USERNAME}:${encodeURIComponent(process.env.MONGODB_PASSWORD)}@${process.env.MONGODB_HOST}/${process.env.MONGODB_NAME}?authSource=admin`
+        : mongoUri,
     );
 
     console.log("MongoDB connected successfully");

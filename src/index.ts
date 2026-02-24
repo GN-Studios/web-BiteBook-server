@@ -1,15 +1,36 @@
 import "dotenv/config";
 import express, { Express, Request, Response } from "express";
+import https from "https";
+import fs from "fs";
+import path from "path";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { connectDB } from "./db/connection";
-import { userRouter, commentRouter, recipeRouter, likeRouter, authRouter } from "./routes";
+import {
+  userRouter,
+  commentRouter,
+  recipeRouter,
+  likeRouter,
+  authRouter,
+  chatgptRouter,
+} from "./routes";
 import cookieParser from "cookie-parser";
 import { corsMiddleware, swaggerSpec } from "./config";
 import { authenticate } from "./middleware/authenticate";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
+
+// Read SSL certificate and key files
+const options =
+  process.env.IS_HTTPS === "true" &&
+  process.env.CERT_PATH &&
+  process.env.KEY_PATH
+    ? {
+        key: fs.readFileSync(path.join(process.env.KEY_PATH)),
+        cert: fs.readFileSync(path.join(process.env.CERT_PATH)),
+      }
+    : undefined;
 
 // Middleware
 app.use(cors());
@@ -38,13 +59,26 @@ app.use("/api/comments", authenticate, commentRouter);
 app.use("/api/likes", authenticate, likeRouter);
 app.use("/api/auth", authRouter);
 
+// ChatGPT routes
+app.use("/api/chatgpt", chatgptRouter);
+
+// Connect to MongoDB and start server
 const start = async () => {
   try {
     await connectDB();
 
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
+    if (process.env.IS_HTTPS) {
+      // Create HTTPS server
+      const server = https.createServer(options!, app);
+
+      server.listen(PORT, () => {
+        console.log(`HTTPS Server running on port ${PORT}`);
+      });
+    } else {
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    }
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);
