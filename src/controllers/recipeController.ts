@@ -119,10 +119,75 @@ export const getRecipesByUserId = async (
 ): Promise<void> => {
   try {
     const { userId } = req.params;
-    const recipes = await Recipe.find({ userId }).populate(
-      "userId",
-      "name email image",
-    );
+
+    const recipes = await Recipe.aggregate([
+      { $match: { userId: new (require("mongoose").Types.ObjectId)(userId) } },
+      {
+        $lookup: {
+          from: "comments",
+          localField: "_id",
+          foreignField: "recipeId",
+          as: "comments",
+        },
+      },
+      {
+        $lookup: {
+          from: "likes",
+          localField: "_id",
+          foreignField: "recipeId",
+          as: "likes",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+      {
+        $addFields: {
+          commentsCount: { $size: "$comments" },
+          likesCount: { $size: "$likes" },
+          author: {
+            $cond: {
+              if: { $gt: [{ $size: "$author" }, 0] },
+              then: { $arrayElemAt: ["$author", 0] },
+              else: null,
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          title: 1,
+          description: 1,
+          image: 1,
+          prepTime: 1,
+          cookTime: 1,
+          servings: 1,
+          ingredients: 1,
+          instructions: 1,
+          author: {
+            $cond: {
+              if: { $ne: ["$author", null] },
+              then: {
+                name: "$author.name",
+                email: "$author.email",
+                image: "$author.image",
+              },
+              else: null,
+            },
+          },
+          commentsCount: 1,
+          likesCount: 1,
+          createdAt: 1,
+          updatedAt: 1,
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
 
     res.status(200).json(recipes);
   } catch (error: any) {

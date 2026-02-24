@@ -9,7 +9,7 @@ import {
   getAllRecipesWithDetails,
 } from "../controllers/recipeController";
 
-const router = Router();
+export const recipeRouter = Router();
 
 /**
  * @swagger
@@ -45,7 +45,7 @@ const router = Router();
  *       400:
  *         description: Bad request
  */
-router.post("/", createRecipe);
+recipeRouter.post("/", createRecipe);
 
 /**
  * @swagger
@@ -64,7 +64,7 @@ router.post("/", createRecipe);
  *       200:
  *         description: List of recipes with details
  */
-router.get("/with-details", getAllRecipesWithDetails);
+recipeRouter.get("/with-details", getAllRecipesWithDetails);
 
 /**
  * @swagger
@@ -82,7 +82,7 @@ router.get("/with-details", getAllRecipesWithDetails);
  *               items:
  *                 $ref: '#/components/schemas/Recipe'
  */
-router.get("/", getAllRecipes);
+recipeRouter.get("/", getAllRecipes);
 
 /**
  * @swagger
@@ -99,7 +99,7 @@ router.get("/", getAllRecipes);
  *       200:
  *         description: List of user's recipes
  */
-router.get("/user/:userId", getRecipesByUserId);
+recipeRouter.get("/userRecipes/:userId", getRecipesByUserId);
 
 /**
  * @swagger
@@ -122,7 +122,7 @@ router.get("/user/:userId", getRecipesByUserId);
  *       404:
  *         description: Recipe not found
  */
-router.get("/:id", getRecipeById);
+recipeRouter.get("/:id", getRecipeById);
 
 /**
  * @swagger
@@ -161,7 +161,7 @@ router.get("/:id", getRecipeById);
  *       404:
  *         description: Recipe not found
  */
-router.put("/:id", updateRecipe);
+recipeRouter.put("/:id", updateRecipe);
 
 /**
  * @swagger
@@ -180,6 +180,4 @@ router.put("/:id", updateRecipe);
  *       404:
  *         description: Recipe not found
  */
-router.delete("/:id", deleteRecipe);
-
-export default router;
+recipeRouter.delete("/:id", deleteRecipe);

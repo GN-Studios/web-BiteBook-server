@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { suggestRecipes } from "../controllers/chatgptController";
 
-const router = Router();
+export const chatgptRouter = Router();
 
 /**
  * @swagger
@@ -63,6 +63,4 @@ const router = Router();
  *       500:
  *         description: Server error
  */
-router.post("/suggest-recipes", suggestRecipes);
-
-export default router;
+chatgptRouter.post("/suggest-recipes", suggestRecipes);

@@ -8,7 +8,7 @@ import {
   getLikesByUserId,
 } from "../controllers/likeController";
 
-const router = Router();
+export const likeRouter = Router();
 
 /**
  * @swagger
@@ -32,7 +32,7 @@ const router = Router();
  *       400:
  *         description: User already liked this recipe or missing fields
  */
-router.post("/", addLike);
+likeRouter.post("/", addLike);
 
 /**
  * @swagger
@@ -56,7 +56,7 @@ router.post("/", addLike);
  *       404:
  *         description: Like not found
  */
-router.delete("/", removeLike);
+likeRouter.delete("/", removeLike);
 
 /**
  * @swagger
@@ -79,7 +79,7 @@ router.delete("/", removeLike);
  *               items:
  *                 $ref: '#/components/schemas/Like'
  */
-router.get("/recipe/:recipeId", getLikesByRecipeId);
+likeRouter.get("/recipe/:recipeId", getLikesByRecipeId);
 
 /**
  * @swagger
@@ -103,7 +103,7 @@ router.get("/recipe/:recipeId", getLikesByRecipeId);
  *                 recipeId: { type: string }
  *                 likesCount: { type: number }
  */
-router.get("/recipe/:recipeId/count", getLikesCountByRecipeId);
+likeRouter.get("/recipe/:recipeId/count", getLikesCountByRecipeId);
 
 /**
  * @swagger
@@ -130,7 +130,7 @@ router.get("/recipe/:recipeId/count", getLikesCountByRecipeId);
  *               properties:
  *                 liked: { type: boolean }
  */
-router.get("/check/:userId/:recipeId", checkUserLike);
+likeRouter.get("/check/:userId/:recipeId", checkUserLike);
 
 /**
  * @swagger
@@ -153,6 +153,4 @@ router.get("/check/:userId/:recipeId", checkUserLike);
  *               items:
  *                 $ref: '#/components/schemas/Like'
  */
-router.get("/user/:userId", getLikesByUserId);
-
-export default router;
+likeRouter.get("/user/:userId", getLikesByUserId);

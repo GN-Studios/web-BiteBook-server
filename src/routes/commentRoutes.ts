@@ -7,7 +7,7 @@ import {
   deleteComment,
 } from "../controllers/commentController";
 
-const router = Router();
+export const commentRouter = Router();
 
 /**
  * @swagger
@@ -32,7 +32,7 @@ const router = Router();
  *       400:
  *         description: Bad request
  */
-router.post("/", createComment);
+commentRouter.post("/", createComment);
 
 /**
  * @swagger
@@ -55,7 +55,7 @@ router.post("/", createComment);
  *               items:
  *                 $ref: '#/components/schemas/Comment'
  */
-router.get("/recipe/:recipeId", getCommentsByRecipeId);
+commentRouter.get("/recipe/:recipeId", getCommentsByRecipeId);
 
 /**
  * @swagger
@@ -78,7 +78,7 @@ router.get("/recipe/:recipeId", getCommentsByRecipeId);
  *       404:
  *         description: Comment not found
  */
-router.get("/:id", getCommentById);
+commentRouter.get("/:id", getCommentById);
 
 /**
  * @swagger
@@ -105,7 +105,7 @@ router.get("/:id", getCommentById);
  *       404:
  *         description: Comment not found
  */
-router.put("/:id", updateComment);
+commentRouter.put("/:id", updateComment);
 
 /**
  * @swagger
@@ -124,6 +124,4 @@ router.put("/:id", updateComment);
  *       404:
  *         description: Comment not found
  */
-router.delete("/:id", deleteComment);
-
-export default router;
+commentRouter.delete("/:id", deleteComment);

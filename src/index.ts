@@ -6,15 +6,21 @@ import path from "path";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import { connectDB } from "./db/connection";
-import { swaggerSpec } from "./config/swagger";
-import userRoutes from "./routes/userRoutes";
-import recipeRoutes from "./routes/recipeRoutes";
-import commentRoutes from "./routes/commentRoutes";
-import likeRoutes from "./routes/likeRoutes";
-import chatgptRoutes from "./routes/chatgptRoutes";
+import {
+  userRouter,
+  commentRouter,
+  recipeRouter,
+  likeRouter,
+  authRouter,
+  chatgptRouter,
+} from "./routes";
+import cookieParser from "cookie-parser";
+import { corsMiddleware, swaggerSpec } from "./config";
+import { authenticate } from "./middleware/authenticate";
 
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
+const BODY_LIMIT = process.env.BODY_LIMIT || "10mb";
 
 // Read SSL certificate and key files
 const options =
@@ -28,9 +34,14 @@ const options =
     : undefined;
 
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors({
+  origin: "*",
+  credentials: true,
+}));
+app.use(express.json({ limit: BODY_LIMIT }));
+app.use(express.urlencoded({ extended: true, limit: BODY_LIMIT }));
+
+app.use(cookieParser());
 
 // Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
@@ -45,19 +56,14 @@ app.get("/api/health", (req: Request, res: Response) => {
 });
 
 // User routes
-app.use("/api/users", userRoutes);
-
-// Recipe routes
-app.use("/api/recipes", recipeRoutes);
-
-// Comment routes
-app.use("/api/comments", commentRoutes);
-
-// Like routes
-app.use("/api/likes", likeRoutes);
+app.use("/api/users", authenticate, userRouter);
+app.use("/api/recipes", authenticate, recipeRouter);
+app.use("/api/comments", authenticate, commentRouter);
+app.use("/api/likes", authenticate, likeRouter);
+app.use("/api/auth", authRouter);
 
 // ChatGPT routes
-app.use("/api/chatgpt", chatgptRoutes);
+app.use("/api/chatgpt", chatgptRouter);
 
 // Connect to MongoDB and start server
 const start = async () => {

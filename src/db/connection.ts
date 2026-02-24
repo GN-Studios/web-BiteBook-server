@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
+import { env } from "../config";
 
 export const connectDB = async (): Promise<void> => {
   try {
-    const mongoUri =
-      process.env.MONGODB_URI || "mongodb://localhost:27017/bitebook";
+    const mongoUri = env.MONGO_URI;
 
     await mongoose.connect(
       process.env.MONGODB_USERNAME && process.env.MONGODB_PASSWORD
