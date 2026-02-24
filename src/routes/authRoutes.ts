@@ -22,9 +22,9 @@ export const authRouter = Router();
  *         application/json:
  *           schema:
  *             type: object
- *             required: [name, email, password]
+ *             required: [username, email, password]
  *             properties:
- *               name: { type: string }
+ *               username: { type: string }
  *               email: { type: string }
  *               password: { type: string }
  *               image: { type: string, nullable: true }
@@ -46,12 +46,37 @@ authRouter.post("/register", AuthController.register);
  *         application/json:
  *           schema:
  *             type: object
- *             required: [email, password]
+ *             required: [username, password]
  *             properties:
- *               email: { type: string }
+ *               username: { type: string }
  *               password: { type: string }
  *     responses:
  *       200:
  *         description: Logged in
  */
 authRouter.post("/login", AuthController.login);
+
+/**
+ * @swagger
+ * /auth/google:
+ *   post:
+ *     tags: [Auth]
+ *     summary: Login with Google OAuth
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [credential]
+ *             properties:
+ *               credential: 
+ *                 type: string
+ *                 description: Google OAuth credential token
+ *     responses:
+ *       200:
+ *         description: Successfully authenticated with Google
+ *       400:
+ *         description: Invalid credential
+ */
+authRouter.post("/google", AuthController.googleLogin);

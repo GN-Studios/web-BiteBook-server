@@ -16,11 +16,12 @@ export const userRouter = Router();
  *           schema:
  *             type: object
  *             properties:
+ *               username: { type: string }
  *               name: { type: string }
  *               email: { type: string }
  *               password: { type: string }
  *               image: { type: string }
- *             required: [name, email, password]
+ *             required: [username, email, password]
  *     responses:
  *       201:
  *         description: User created successfully
@@ -88,6 +89,7 @@ userRouter.get("/:id", getUserById);
  *           schema:
  *             type: object
  *             properties:
+ *               username: { type: string }
  *               name: { type: string }
  *               email: { type: string }
  *               password: { type: string }

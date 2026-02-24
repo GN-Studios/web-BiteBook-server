@@ -33,12 +33,14 @@ const options =
     : undefined;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
-app.use(corsMiddleware);
 
 // Swagger UI
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
