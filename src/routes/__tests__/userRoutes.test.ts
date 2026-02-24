@@ -1,6 +1,6 @@
 import request from "supertest";
 import express from "express";
-import userRoutes from "../userRoutes";
+import { userRouter } from "../userRoutes";
 import { User } from "../../models/User";
 
 // Mock mongoose
@@ -8,7 +8,7 @@ jest.mock("../../models/User");
 
 const app = express();
 app.use(express.json());
-app.use("/api/users", userRoutes);
+app.use("/api/users", userRouter);
 
 describe("User Routes", () => {
   beforeEach(() => {
@@ -23,11 +23,14 @@ describe("User Routes", () => {
         password: "password123",
       };
 
-      (User as any).mockImplementation(() => ({
-        save: jest.fn().mockResolvedValue(newUser),
-      }));
+      const createdUser = {
+        ...newUser,
+        _id: "123",
+        toObject: () => ({ ...newUser, _id: "123" }),
+      };
 
       (User.findOne as jest.Mock).mockResolvedValue(null);
+      (User.create as jest.Mock).mockResolvedValue(createdUser);
 
       const response = await request(app).post("/api/users").send(newUser);
 
@@ -35,20 +38,20 @@ describe("User Routes", () => {
       expect(response.body.message).toBe("User created successfully");
     });
 
-    it("should return 400 if email already exists", async () => {
+    it("should return 409 if email already exists", async () => {
       const newUser = {
         name: "John Doe",
         email: "john@example.com",
         password: "password123",
       };
 
-      (User.findOne as jest.Mock).mockResolvedValue({
-        email: "john@example.com",
-      });
+      (User.findOne as jest.Mock)
+        .mockResolvedValueOnce(null) // username check
+        .mockResolvedValueOnce({ email: "john@example.com" }); // email check
 
       const response = await request(app).post("/api/users").send(newUser);
 
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(409);
       expect(response.body.error).toBe("Email already exists");
     });
 
@@ -114,12 +117,23 @@ describe("User Routes", () => {
     it("should update a user", async () => {
       const updatedUser = {
         _id: "123",
-        name: "John Updated",
+        name: "John",
+        username: "john",
         email: "john@example.com",
-        save: jest.fn().mockResolvedValue(this),
+        save: jest.fn().mockResolvedValue(undefined),
+        toObject: () => ({
+          _id: "123",
+          name: "John Updated",
+          username: "john",
+          email: "john@example.com",
+          password: "hashedpassword",
+        }),
       };
 
-      (User.findById as jest.Mock).mockResolvedValue(updatedUser);
+      (User.findById as jest.Mock).mockReturnValue({
+        select: jest.fn().mockResolvedValue(updatedUser),
+      });
+      (User.findOne as jest.Mock).mockResolvedValue(null);
 
       const response = await request(app)
         .put("/api/users/123")
@@ -130,7 +144,10 @@ describe("User Routes", () => {
     });
 
     it("should return 404 if user not found", async () => {
-      (User.findById as jest.Mock).mockResolvedValue(null);
+      (User.findById as jest.Mock).mockReturnValue({
+        select: jest.fn().mockResolvedValue(null),
+      });
+      (User.findOne as jest.Mock).mockResolvedValue(null);
 
       const response = await request(app)
         .put("/api/users/123")

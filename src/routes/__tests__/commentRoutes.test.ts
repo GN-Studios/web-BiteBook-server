@@ -1,13 +1,13 @@
 import request from "supertest";
 import express from "express";
-import commentRoutes from "../commentRoutes";
+import { commentRouter } from "../commentRoutes";
 import { Comment } from "../../models/Comment";
 
 jest.mock("../../models/Comment");
 
 const app = express();
 app.use(express.json());
-app.use("/api/comments", commentRoutes);
+app.use("/api/comments", commentRouter);
 
 describe("Comment Routes", () => {
   beforeEach(() => {
